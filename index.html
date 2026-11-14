@@ -15,20 +15,20 @@
 </head>
 <body class="bg-[#090d16] text-slate-50 antialiased m-0 p-0">
 
-  <!-- TELA DE BLOQUEIO (ACESSO EXCLUSIVO RODRIGO E DANIELE) -->
+  <!-- TELA DE BLOQUEIO (SEM EXPOR NOMES DOS USUÁRIOS) -->
   <div id="auth-gate" class="max-w-md mx-auto min-h-screen flex flex-col justify-center px-5 py-8 bg-[#090d16] border-x border-slate-800">
     <div class="bg-[#131c2e] border border-slate-800 rounded-3xl p-6 space-y-5 shadow-2xl">
       <div class="flex items-center gap-3.5">
         <div class="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shrink-0 font-bold text-xl">🔒</div>
         <div>
-          <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-400">Acesso Restrito Familiar</span>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-400">Acesso Restrito</span>
           <h1 class="text-lg font-extrabold text-white leading-tight">Passaporte Família</h1>
-          <p class="text-xs text-slate-400">Rodrigo, Daniele, Gabriel e Giovanna</p>
+          <p class="text-xs text-slate-400">Controle e Acompanhamento • Polícia Federal</p>
         </div>
       </div>
 
       <p class="text-xs text-slate-300 leading-relaxed">
-        Digite seu e-mail autorizado para acessar o checklist, protocolos da Polícia Federal e agendamentos da família.
+        Digite seu e-mail cadastrado para acessar o aplicativo.
       </p>
 
       <form onsubmit="handleAuthSubmit(event)" class="space-y-3.5" novalidate>
@@ -39,7 +39,7 @@
         </div>
 
         <div id="auth-error" class="hidden p-3 rounded-xl bg-rose-950/80 border border-rose-700 text-rose-200 text-xs font-semibold">
-          Acesso negado. Somente os e-mails autorizados de Rodrigo e Daniele têm permissão.
+          Acesso negado. Este e-mail não possui permissão para acessar o aplicativo.
         </div>
 
         <button type="submit" class="w-full min-h-[50px] px-4 py-3 rounded-xl font-bold text-sm bg-emerald-600 hover:bg-emerald-500 text-white shadow-md flex items-center justify-center gap-2">
@@ -167,7 +167,7 @@
     </main>
 
     <div id="toast" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 px-4 py-3 rounded-xl bg-white text-slate-950 text-xs font-bold shadow-lg transition-all opacity-0 pointer-events-none">
-      <span id="toast-message"> Copiado!</span>
+      <span id="toast-message">✅ Copiado!</span>
     </div>
 
     <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md z-40 bg-[#131c2e]/95 backdrop-blur-md border-t border-slate-800 px-2 py-1.5 grid grid-cols-3 gap-1">
