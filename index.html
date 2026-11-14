@@ -4,106 +4,330 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#059669" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>Passaporte Família — Polícia Federal</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #090d16; color: #f8fafc; margin: 0; padding: 0; }
-    .safe-bottom { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)); }
-    input[type="date"], input[type="time"] { color-scheme: dark; }
+    :root {
+      --background: #090d16;
+      --content: #111827;
+      --card: #131c2e;
+      --border: #1e293b;
+      --card-border: #1e293b;
+      --foreground: #f8fafc;
+      --muted-foreground: #94a3b8;
+      --placeholder: #64748b;
+      --primary: #059669;
+      --primary-foreground: #ffffff;
+      --success: #10b981;
+      --link: #34d399;
+    }
+
+    html.theme-light {
+      --background: #f1f5f9;
+      --content: #f8fafc;
+      --card: #ffffff;
+      --border: #cbd5e1;
+      --card-border: #e2e8f0;
+      --foreground: #0f172a;
+      --muted-foreground: #475569;
+      --placeholder: #94a3b8;
+      --primary: #059669;
+      --primary-foreground: #ffffff;
+      --success: #059669;
+      --link: #047857;
+    }
+
+    * {
+      -webkit-tap-highlight-color: transparent;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--background);
+      color: var(--foreground);
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .safe-bottom {
+      padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+    }
+
+    input[type="date"], input[type="time"] {
+      color-scheme: dark;
+    }
+
+    html.theme-light input[type="date"],
+    html.theme-light input[type="time"] {
+      color-scheme: light;
+    }
+
+    /* Adaptação completa para o Modo Dia (Claro) */
+    html.theme-light body,
+    html.theme-light #auth-gate,
+    html.theme-light #app {
+      background-color: #f1f5f9 !important;
+      color: #0f172a !important;
+      border-color: #cbd5e1 !important;
+    }
+
+    html.theme-light .bg-\[\#131c2e\] {
+      background-color: #ffffff !important;
+    }
+
+    html.theme-light .bg-\[\#131c2e\]\/95 {
+      background-color: rgba(255, 255, 255, 0.95) !important;
+    }
+
+    html.theme-light .bg-\[\#090d16\] {
+      background-color: #f8fafc !important;
+    }
+
+    html.theme-light .border-slate-800,
+    html.theme-light .border-slate-800\/80,
+    html.theme-light .border-slate-700 {
+      border-color: #cbd5e1 !important;
+    }
+
+    html.theme-light .text-white:not(.bg-emerald-600):not(.bg-emerald-600 *):not(.bg-slate-800):not(.bg-slate-800 *) {
+      color: #0f172a !important;
+    }
+
+    html.theme-light .text-slate-50,
+    html.theme-light .text-slate-200,
+    html.theme-light .text-slate-300 {
+      color: #1e293b !important;
+    }
+
+    html.theme-light .text-slate-400,
+    html.theme-light .text-slate-500 {
+      color: #475569 !important;
+    }
+
+    html.theme-light .text-emerald-400 {
+      color: #047857 !important;
+    }
+
+    html.theme-light .bg-emerald-600\/20 {
+      background-color: rgba(5, 150, 105, 0.12) !important;
+    }
+
+    html.theme-light .hover\:bg-slate-800:hover {
+      background-color: #e2e8f0 !important;
+    }
+
+    html.theme-light #auth-error {
+      background-color: #ffe4e6 !important;
+      border-color: #fda4af !important;
+      color: #be123c !important;
+    }
+
+    html.theme-light #toast {
+      background-color: #0f172a !important;
+      color: #ffffff !important;
+    }
   </style>
 </head>
-<body class="bg-[#090d16] text-slate-50 antialiased m-0 p-0">
+<body class="bg-[#090d16] text-slate-50 antialiased selection:bg-emerald-600 selection:text-white m-0 p-0">
 
-  <!-- TELA DE BLOQUEIO (SEM EXPOR NOMES DOS USUÁRIOS) -->
+  <!-- TELA DE BLOQUEIO / AUTENTICAÇÃO POR E-MAIL AUTORIZADO -->
   <div id="auth-gate" class="max-w-md mx-auto min-h-screen flex flex-col justify-center px-5 py-8 bg-[#090d16] border-x border-slate-800">
     <div class="bg-[#131c2e] border border-slate-800 rounded-3xl p-6 space-y-5 shadow-2xl">
-      <div class="flex items-center gap-3.5">
-        <div class="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shrink-0 font-bold text-xl">🔒</div>
-        <div>
-          <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-400">Acesso Restrito</span>
-          <h1 class="text-lg font-extrabold text-white leading-tight">Passaporte Família</h1>
-          <p class="text-xs text-slate-400">Controle e Acompanhamento • Polícia Federal</p>
+      <div class="flex items-start justify-between gap-2">
+        <div class="flex items-center gap-3.5">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <div>
+            <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-400">Acesso Restrito</span>
+            <h1 class="text-lg font-extrabold text-white leading-tight">Passaporte Família</h1>
+            <p class="text-xs text-slate-400">Controle e Acompanhamento • Polícia Federal</p>
+          </div>
         </div>
+
+        <!-- Botão Alternar Modo Dia / Noite na Tela de Login -->
+        <button
+          type="button"
+          onclick="toggleTheme()"
+          aria-label="Alternar tema Dia ou Noite"
+          class="theme-toggle-btn min-h-[38px] px-2.5 py-1.5 rounded-xl bg-[#090d16] border border-slate-800 text-xs font-bold text-slate-200 flex items-center gap-1.5 shrink-0 hover:bg-slate-800 transition cursor-pointer"
+        >
+          <span class="theme-toggle-icon">☀️</span>
+          <span class="theme-toggle-label">Dia</span>
+        </button>
       </div>
 
       <p class="text-xs text-slate-300 leading-relaxed">
         Digite seu e-mail cadastrado para acessar o aplicativo.
       </p>
 
-      <form onsubmit="handleAuthSubmit(event)" class="space-y-3.5" novalidate>
+      <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-3.5" novalidate>
         <div>
-          <label for="auth-email" class="block text-xs font-bold text-slate-300 mb-1.5">E-mail autorizado</label>
-          <input id="auth-email" type="email" inputmode="email" autocomplete="email" required placeholder="seu.email@exemplo.com"
-            class="w-full min-h-[50px] px-4 py-3 rounded-xl bg-[#090d16] border border-slate-700 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-emerald-500" />
+          <label for="auth-email" class="block text-xs font-bold text-slate-300 mb-1.5">
+            E-mail autorizado
+          </label>
+          <input
+            id="auth-email"
+            type="email"
+            inputmode="email"
+            autocomplete="email"
+            required
+            placeholder="seu.email@exemplo.com"
+            class="w-full min-h-[50px] px-4 py-3 rounded-xl bg-[#090d16] border border-slate-700 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-emerald-500"
+          />
         </div>
 
-        <div id="auth-error" class="hidden p-3 rounded-xl bg-rose-950/80 border border-rose-700 text-rose-200 text-xs font-semibold">
+        <div id="auth-error" class="hidden p-3 rounded-xl bg-rose-950/80 border border-rose-700 text-rose-200 text-xs font-semibold leading-relaxed">
           Acesso negado. Este e-mail não possui permissão para acessar o aplicativo.
         </div>
 
-        <button type="submit" class="w-full min-h-[50px] px-4 py-3 rounded-xl font-bold text-sm bg-emerald-600 hover:bg-emerald-500 text-white shadow-md flex items-center justify-center gap-2">
-          <span>Entrar no Aplicativo →</span>
+        <button
+          type="submit"
+          class="w-full min-h-[50px] px-4 py-3 rounded-xl font-bold text-sm bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-white shadow-md flex items-center justify-center gap-2 transition cursor-pointer"
+        >
+          <span>Entrar no Aplicativo</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </button>
       </form>
+
+      <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+        <span>🔒 Protegido para 2 usuários</span>
+        <span>Polícia Federal • SP</span>
+      </div>
     </div>
   </div>
 
-  <!-- APP PRINCIPAL -->
-  <div id="app" class="hidden max-w-md mx-auto min-h-screen flex-col bg-[#090d16] border-x border-slate-800 relative">
+  <!-- APLICATIVO PRINCIPAL (Visível apenas após login com e-mail autorizado) -->
+  <div id="app" class="hidden max-w-md mx-auto min-h-screen flex-col bg-[#090d16] border-x border-slate-800 relative shadow-xl">
+    
+    <!-- STICKY HEADER -->
     <header class="sticky top-0 z-30 bg-[#131c2e]/95 backdrop-blur-md border-b border-slate-800 px-4 py-3 space-y-2.5">
       <div class="flex items-center justify-between gap-2">
         <div class="flex items-center gap-2.5 min-w-0">
-          <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 font-bold">🛂</div>
+          <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 font-bold shadow-sm" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2"/><circle cx="12" cy="10" r="3"/><path d="M8 17h8"/><path d="M10 14h4"/></svg>
+          </div>
           <div class="truncate">
-            <h1 class="text-base font-extrabold text-white truncate">Passaporte Família</h1>
-            <div class="flex items-center gap-2 text-xs text-slate-400">
-              <span id="logged-user-badge" class="text-emerald-400 font-semibold"></span>
+            <div class="flex items-center gap-1.5">
+              <h1 class="text-base font-extrabold tracking-tight leading-tight text-white truncate">
+                Passaporte Família
+              </h1>
+            </div>
+            <div class="flex items-center gap-2 text-xs text-slate-400 leading-tight">
+              <span id="logged-user-badge" class="text-emerald-400 font-semibold truncate"></span>
               <span>•</span>
-              <button onclick="handleLogout()" type="button" class="text-[11px] text-slate-400 underline">Sair</button>
+              <button onclick="handleLogout()" type="button" class="text-[11px] text-slate-400 underline hover:text-white cursor-pointer">
+                Sair
+              </button>
             </div>
           </div>
         </div>
-        <div class="shrink-0 bg-[#090d16] border border-slate-800 rounded-xl px-2.5 py-1.5 text-right">
-          <div class="text-[11px] text-slate-400 leading-none">Taxas GRU (4x)</div>
-          <div class="text-xs font-extrabold font-mono text-emerald-400 mt-0.5">R$ 1.029,00</div>
+
+        <div class="flex items-center gap-1.5 shrink-0">
+          <!-- Botão Alternar Modo Dia / Noite -->
+          <button
+            type="button"
+            onclick="toggleTheme()"
+            aria-label="Alternar tema Dia ou Noite"
+            title="Alternar entre Modo Dia e Modo Noite"
+            class="theme-toggle-btn min-h-[42px] px-2.5 py-1.5 rounded-xl bg-[#090d16] border border-slate-800 text-xs font-bold text-slate-200 flex items-center gap-1 hover:bg-slate-800 transition cursor-pointer"
+          >
+            <span class="theme-toggle-icon">☀️</span>
+            <span class="theme-toggle-label">Dia</span>
+          </button>
+
+          <!-- Badge Valor Total das Taxas -->
+          <div class="bg-[#090d16] border border-slate-800 rounded-xl px-2.5 py-1.5 text-right">
+            <div class="text-[10px] font-medium text-slate-400 leading-none">Taxas GRU (4x)</div>
+            <div class="text-xs font-extrabold font-mono tabular-nums text-emerald-400 mt-0.5" id="header-gru-badge">R$ 1.029,00</div>
+          </div>
         </div>
       </div>
 
+      <!-- Progress Bar (X/13 concluídos) -->
       <div class="space-y-1">
         <div class="flex items-center justify-between text-xs">
           <span class="font-semibold text-slate-200" id="progress-label">0/13 concluídos</span>
-          <span class="font-mono font-bold text-emerald-400" id="progress-pct">0%</span>
+          <span class="font-mono font-bold text-emerald-400 tabular-nums" id="progress-pct">0%</span>
         </div>
         <div class="w-full h-2.5 bg-[#090d16] rounded-full overflow-hidden border border-slate-800">
-          <div id="progress-bar" class="h-full bg-emerald-500 transition-all duration-300 rounded-full" style="width: 0%"></div>
+          <div id="progress-bar" class="h-full bg-emerald-500 transition-all duration-300 ease-out rounded-full" style="width: 0%"></div>
         </div>
       </div>
 
+      <!-- Botão Verde de Ação Rápida: Enviar no WhatsApp -->
       <div class="flex items-center gap-2 pt-0.5">
-        <button onclick="shareOnWhatsApp()" type="button" class="flex-1 min-h-[48px] px-4 py-2.5 rounded-xl font-bold text-sm bg-emerald-600 hover:bg-emerald-500 text-white flex items-center justify-center gap-2">
-          <span>📲 Enviar no WhatsApp</span>
+        <button
+          id="header-whatsapp-btn"
+          onclick="shareOnWhatsApp()"
+          type="button"
+          class="flex-1 min-h-[48px] px-4 py-2.5 rounded-xl font-bold text-sm bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-white shadow-sm flex items-center justify-center gap-2 transition cursor-pointer"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          <span>Enviar no WhatsApp</span>
         </button>
-        <button onclick="copySummary()" type="button" class="min-h-[48px] px-3.5 py-2.5 rounded-xl font-semibold text-xs bg-[#090d16] text-slate-200 border border-slate-800">
-          📋 Copiar
+        <button
+          id="header-copy-btn"
+          onclick="copySummary()"
+          type="button"
+          title="Copiar resumo para área de transferência"
+          class="min-h-[48px] px-3.5 py-2.5 rounded-xl font-semibold text-xs bg-[#090d16] hover:bg-slate-800 active:scale-[0.98] text-slate-200 border border-slate-800 flex items-center justify-center gap-1.5 transition shrink-0 cursor-pointer"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+          <span>Copiar</span>
         </button>
       </div>
     </header>
 
+    <!-- MAIN CONTENT AREA -->
     <main class="flex-1 px-4 pt-4 safe-bottom">
-      <!-- ABA 1: CHECKLIST -->
+      
+      <!-- TAB 1: CHECKLIST (13 Etapas) -->
       <section id="tab-checklist" class="space-y-4">
-        <div class="flex items-center gap-1.5 overflow-x-auto pb-1">
-          <button onclick="setChecklistFilter('all')" id="filter-all" class="min-h-[40px] px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap bg-emerald-600 text-white">Todos (13)</button>
-          <button onclick="setChecklistFilter('pending')" id="filter-pending" class="min-h-[40px] px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap bg-[#131c2e] text-slate-400 border border-slate-800">Pendentes</button>
-          <button onclick="setChecklistFilter('adultos')" id="filter-adultos" class="min-h-[40px] px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap bg-[#131c2e] text-slate-400 border border-slate-800">Adultos</button>
-          <button onclick="setChecklistFilter('menores')" id="filter-menores" class="min-h-[40px] px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap bg-[#131c2e] text-slate-400 border border-slate-800">Menores</button>
-          <button onclick="setChecklistFilter('geral')" id="filter-geral" class="min-h-[40px] px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap bg-[#131c2e] text-slate-400 border border-slate-800">PF & Taxas</button>
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1" role="tablist" aria-label="Filtrar checklist">
+          <button onclick="setChecklistFilter('all')" id="filter-all" class="min-h-[40px] px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition bg-emerald-600 text-white cursor-pointer">
+            Todos (13)
+          </button>
+          <button onclick="setChecklistFilter('pending')" id="filter-pending" class="min-h-[40px] px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition bg-[#131c2e] text-slate-400 border border-slate-800 cursor-pointer">
+            Pendentes
+          </button>
+          <button onclick="setChecklistFilter('adultos')" id="filter-adultos" class="min-h-[40px] px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition bg-[#131c2e] text-slate-400 border border-slate-800 cursor-pointer">
+            Adultos (Renovação)
+          </button>
+          <button onclick="setChecklistFilter('menores')" id="filter-menores" class="min-h-[40px] px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition bg-[#131c2e] text-slate-400 border border-slate-800 cursor-pointer">
+            Menores (1ª via)
+          </button>
+          <button onclick="setChecklistFilter('geral')" id="filter-geral" class="min-h-[40px] px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition bg-[#131c2e] text-slate-400 border border-slate-800 cursor-pointer">
+            PF & Taxas
+          </button>
         </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-[#131c2e] border border-slate-800 rounded-xl p-2.5 flex items-center justify-between">
+            <div>
+              <div class="text-xs font-bold text-white">Rodrigo & Daniele</div>
+              <div class="text-[11px] text-slate-400">Renovação • Validade 10 anos</div>
+            </div>
+            <span class="text-xs font-mono font-bold px-2 py-0.5 rounded-md bg-[#090d16] border border-slate-800 text-emerald-400">2x</span>
+          </div>
+          <div class="bg-[#131c2e] border border-slate-800 rounded-xl p-2.5 flex items-center justify-between">
+            <div>
+              <div class="text-xs font-bold text-white">Gabriel (14) & Giovanna (8)</div>
+              <div class="text-[11px] text-slate-400">1ª Via • Menores</div>
+            </div>
+            <span class="text-xs font-mono font-bold px-2 py-0.5 rounded-md bg-[#090d16] border border-slate-800 text-emerald-400">2x</span>
+          </div>
+        </div>
+
         <div id="checklist-container" class="space-y-2.5"></div>
       </section>
 
-      <!-- ABA 2: PROTOCOLOS -->
+      <!-- TAB 2: PROTOCOLOS & STATUS -->
       <section id="tab-protocolos" class="space-y-4 hidden">
         <div class="bg-[#131c2e] border border-slate-800 rounded-2xl p-3.5 space-y-2.5">
           <div class="flex items-center justify-between">
@@ -113,33 +337,77 @@
             </div>
             <span class="text-xs font-mono font-semibold px-2 py-1 rounded-lg bg-[#090d16] border border-slate-800 text-emerald-400" id="gru-paid-counter">0/4 GRUs pagas</span>
           </div>
-          <div class="flex flex-col gap-2">
-            <button onclick="shareOnWhatsApp()" type="button" class="min-h-[48px] px-4 py-2.5 rounded-xl font-bold text-sm bg-emerald-600 text-white">📲 Compartilhar Status no WhatsApp</button>
-            <button onclick="copySummary()" type="button" class="min-h-[48px] px-4 py-2.5 rounded-xl font-bold text-xs bg-[#090d16] text-slate-200 border border-slate-800">📋 Copiar Resumo</button>
+          <div class="flex flex-col sm:flex-row gap-2">
+            <button
+              onclick="shareOnWhatsApp()"
+              type="button"
+              class="flex-1 min-h-[48px] px-4 py-2.5 rounded-xl font-bold text-sm bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-white flex items-center justify-center gap-2 transition shadow-sm cursor-pointer"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              <span>Compartilhar Status no WhatsApp</span>
+            </button>
+            <button
+              onclick="copySummary()"
+              type="button"
+              class="min-h-[48px] px-4 py-2.5 rounded-xl font-bold text-xs bg-[#090d16] hover:bg-slate-800 text-slate-200 border border-slate-800 flex items-center justify-center gap-2 transition cursor-pointer"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+              <span>Copiar Resumo</span>
+            </button>
           </div>
         </div>
 
         <div class="bg-[#131c2e] border border-slate-800 rounded-2xl p-4 space-y-3">
           <div class="flex items-center justify-between">
-            <h2 class="text-sm font-bold text-white">📅 Agendamento Presencial (PF)</h2>
-            <button onclick="switchTab('postos')" type="button" class="text-xs font-semibold text-emerald-400">Ver Postos SP →</button>
+            <div class="flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-400"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+              <h2 class="text-sm font-bold text-white">Agendamento Presencial (PF)</h2>
+            </div>
+            <button onclick="switchTab('postos')" type="button" class="text-xs font-semibold text-emerald-400 hover:underline cursor-pointer">
+              Ver Postos SP →
+            </button>
           </div>
+
           <div class="space-y-2.5">
-            <select id="sched-posto" onchange="updateScheduleField('posto', this.value)" class="w-full min-h-[48px] px-3 py-2 rounded-xl bg-[#090d16] border border-slate-800 text-sm text-white">
-              <option value="">Selecione um posto em SP...</option>
-              <option value="PF Shopping Eldorado (Pinheiros)">PF Shopping Eldorado (Pinheiros)</option>
-              <option value="PF Shopping VillaLobos (Alto de Pinheiros)">PF Shopping VillaLobos (Alto de Pinheiros)</option>
-              <option value="PF Shopping Ibirapuera (Moema)">PF Shopping Ibirapuera (Moema)</option>
-              <option value="PF Shopping West Plaza (Água Branca)">PF Shopping West Plaza (Água Branca)</option>
-              <option value="PF Shopping Anália Franco (Tatuapé)">PF Shopping Anália Franco (Tatuapé)</option>
-              <option value="PF Shopping Interlagos (Interlagos)">PF Shopping Interlagos (Interlagos)</option>
-              <option value="PF Superintendência Lapa (Água Branca)">PF Superintendência Lapa (Água Branca)</option>
-              <option value="PF Aeroporto de Guarulhos (Terminal 3)">PF Aeroporto de Guarulhos (Terminal 3)</option>
-              <option value="PF Shopping Tamboré (Alphaville/Barueri)">PF Shopping Tamboré (Alphaville/Barueri)</option>
-            </select>
+            <div>
+              <label for="sched-posto" class="block text-xs font-semibold text-slate-400 mb-1">Posto da Polícia Federal</label>
+              <select
+                id="sched-posto"
+                onchange="updateScheduleField('posto', this.value)"
+                class="w-full min-h-[48px] px-3 py-2 rounded-xl bg-[#090d16] border border-slate-800 text-sm font-medium text-white focus:outline-none focus:border-emerald-500"
+              >
+                <option value="">Selecione um posto em SP...</option>
+                <option value="PF Shopping Eldorado (Pinheiros)">PF Shopping Eldorado (Pinheiros)</option>
+                <option value="PF Shopping VillaLobos (Alto de Pinheiros)">PF Shopping VillaLobos (Alto de Pinheiros)</option>
+                <option value="PF Shopping Ibirapuera (Moema)">PF Shopping Ibirapuera (Moema)</option>
+                <option value="PF Shopping West Plaza (Água Branca)">PF Shopping West Plaza (Água Branca)</option>
+                <option value="PF Shopping Anália Franco (Tatuapé)">PF Shopping Anália Franco (Tatuapé)</option>
+                <option value="PF Shopping Interlagos (Interlagos)">PF Shopping Interlagos (Interlagos)</option>
+                <option value="PF Superintendência Lapa (Água Branca)">PF Superintendência Lapa (Água Branca)</option>
+                <option value="PF Aeroporto de Guarulhos (Terminal 3)">PF Aeroporto de Guarulhos (Terminal 3)</option>
+                <option value="PF Shopping Tamboré (Alphaville/Barueri)">PF Shopping Tamboré (Alphaville/Barueri)</option>
+              </select>
+            </div>
+
             <div class="grid grid-cols-2 gap-2.5">
-              <input id="sched-date" type="date" onchange="updateScheduleField('date', this.value)" class="w-full min-h-[48px] px-3 py-2 rounded-xl bg-[#090d16] border border-slate-800 text-sm font-mono text-white" />
-              <input id="sched-time" type="time" onchange="updateScheduleField('time', this.value)" class="w-full min-h-[48px] px-3 py-2 rounded-xl bg-[#090d16] border border-slate-800 text-sm font-mono text-white" />
+              <div>
+                <label for="sched-date" class="block text-xs font-semibold text-slate-400 mb-1">Data</label>
+                <input
+                  id="sched-date"
+                  type="date"
+                  onchange="updateScheduleField('date', this.value)"
+                  class="w-full min-h-[48px] px-3 py-2 rounded-xl bg-[#090d16] border border-slate-800 text-sm font-mono text-white focus:outline-none focus:border-emerald-500"
+                />
+              </div>
+              <div>
+                <label for="sched-time" class="block text-xs font-semibold text-slate-400 mb-1">Horário</label>
+                <input
+                  id="sched-time"
+                  type="time"
+                  onchange="updateScheduleField('time', this.value)"
+                  class="w-full min-h-[48px] px-3 py-2 rounded-xl bg-[#090d16] border border-slate-800 text-sm font-mono text-white focus:outline-none focus:border-emerald-500"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -147,79 +415,258 @@
         <div id="protocols-container" class="space-y-3"></div>
 
         <div class="bg-[#131c2e] border border-slate-800 rounded-2xl p-4 space-y-3">
-          <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Prévia da Mensagem WhatsApp</span>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Prévia da Mensagem WhatsApp</span>
+            <a
+              href="https://servicos.dpf.gov.br/sinpa/consultarSituacaoSolicitacao.do"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-xs font-semibold text-emerald-400 hover:underline flex items-center gap-1"
+            >
+              <span>Portal PF Oficial</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
+            </a>
+          </div>
           <pre id="whatsapp-preview" class="text-xs font-mono whitespace-pre-wrap bg-[#090d16] border border-slate-800 rounded-xl p-3 text-slate-200 leading-relaxed overflow-x-auto"></pre>
-          <div class="flex flex-col gap-2">
-            <button onclick="shareOnWhatsApp()" type="button" class="min-h-[48px] px-4 py-2.5 rounded-xl font-bold text-sm bg-emerald-600 text-white">📲 Compartilhar Status no WhatsApp</button>
-            <button onclick="copySummary()" type="button" class="min-h-[48px] px-4 py-2.5 rounded-xl font-bold text-xs bg-[#090d16] text-slate-200 border border-slate-800">📋 Copiar Resumo</button>
+
+          <div class="flex flex-col sm:flex-row gap-2 pt-1">
+            <button
+              onclick="shareOnWhatsApp()"
+              type="button"
+              class="flex-1 min-h-[48px] px-4 py-2.5 rounded-xl font-bold text-sm bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-white flex items-center justify-center gap-2 transition shadow-sm cursor-pointer"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              <span>Compartilhar Status no WhatsApp</span>
+            </button>
+            <button
+              onclick="copySummary()"
+              type="button"
+              class="min-h-[48px] px-4 py-2.5 rounded-xl font-bold text-xs bg-[#090d16] hover:bg-slate-800 text-slate-200 border border-slate-800 flex items-center justify-center gap-2 transition cursor-pointer"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+              <span>Copiar Resumo</span>
+            </button>
           </div>
         </div>
       </section>
 
-      <!-- ABA 3: POSTOS SP -->
+      <!-- TAB 3: POSTOS SP -->
       <section id="tab-postos" class="space-y-4 hidden">
         <div class="bg-[#131c2e] border border-slate-800 rounded-2xl p-3.5 space-y-2">
-          <h2 class="text-sm font-bold text-white">Postos da Polícia Federal — São Paulo</h2>
-          <input id="posto-search" type="search" oninput="renderPostos()" placeholder="Buscar por bairro ou shopping..." class="w-full min-h-[48px] px-3.5 py-2 rounded-xl bg-[#090d16] border border-slate-800 text-sm text-white placeholder:text-slate-500" />
+          <div class="flex items-center justify-between">
+            <h2 class="text-sm font-bold text-white">Postos da Polícia Federal — São Paulo</h2>
+            <span class="text-xs font-medium text-slate-400">9 unidades</span>
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Toque em <strong>Escolher Posto</strong> para vincular ao agendamento da família ou abra a rota direta no <strong>Google Maps</strong> / <strong>Waze</strong>.
+          </p>
+          <input
+            id="posto-search"
+            type="search"
+            oninput="renderPostos()"
+            placeholder="Buscar por bairro ou shopping (ex: Eldorado, Lapa, Ibirapuera)..."
+            class="w-full min-h-[48px] px-3.5 py-2 rounded-xl bg-[#090d16] border border-slate-800 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-emerald-500"
+          />
         </div>
+
         <div id="postos-container" class="space-y-3"></div>
       </section>
+
     </main>
 
-    <div id="toast" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 px-4 py-3 rounded-xl bg-white text-slate-950 text-xs font-bold shadow-lg transition-all opacity-0 pointer-events-none">
-      <span id="toast-message">✅ Copiado!</span>
+    <!-- TOAST NOTIFICATION -->
+    <div
+      id="toast"
+      role="status"
+      aria-live="polite"
+      class="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 px-4 py-3 rounded-xl bg-white text-slate-950 text-xs font-bold shadow-lg flex items-center gap-2 transition-all duration-200 opacity-0 pointer-events-none translate-y-2"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-600 shrink-0"><polyline points="20 6 9 17 4 12"/></svg>
+      <span id="toast-message">Resumo copiado com sucesso!</span>
     </div>
 
-    <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md z-40 bg-[#131c2e]/95 backdrop-blur-md border-t border-slate-800 px-2 py-1.5 grid grid-cols-3 gap-1">
-      <button id="nav-checklist" onclick="switchTab('checklist')" type="button" class="min-h-[54px] rounded-xl flex flex-col items-center justify-center gap-1 font-bold text-xs bg-emerald-600 text-white">☑️ Checklist</button>
-      <button id="nav-protocolos" onclick="switchTab('protocolos')" type="button" class="min-h-[54px] rounded-xl flex flex-col items-center justify-center gap-1 font-semibold text-xs text-slate-400">👤 Protocolos</button>
-      <button id="nav-postos" onclick="switchTab('postos')" type="button" class="min-h-[54px] rounded-xl flex flex-col items-center justify-center gap-1 font-semibold text-xs text-slate-400">📍 Postos SP</button>
+    <!-- BOTTOM TAB BAR -->
+    <nav
+      aria-label="Navegação principal"
+      class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md z-40 bg-[#131c2e]/95 backdrop-blur-md border-t border-slate-800 px-2 py-1.5 grid grid-cols-3 gap-1"
+    >
+      <button
+        id="nav-checklist"
+        onclick="switchTab('checklist')"
+        type="button"
+        class="min-h-[54px] rounded-xl flex flex-col items-center justify-center gap-1 transition font-bold text-xs bg-emerald-600 text-white cursor-pointer"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        <span>Checklist</span>
+      </button>
+
+      <button
+        id="nav-protocolos"
+        onclick="switchTab('protocolos')"
+        type="button"
+        class="min-h-[54px] rounded-xl flex flex-col items-center justify-center gap-1 transition font-semibold text-xs text-slate-400 hover:text-white cursor-pointer"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Protocolos</span>
+      </button>
+
+      <button
+        id="nav-postos"
+        onclick="switchTab('postos')"
+        type="button"
+        class="min-h-[54px] rounded-xl flex flex-col items-center justify-center gap-1 transition font-semibold text-xs text-slate-400 hover:text-white cursor-pointer"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>Postos SP</span>
+      </button>
     </nav>
   </div>
 
   <script>
     const STORAGE_KEY = 'passaporte_familia_pf_v1';
     const AUTH_STORAGE_KEY = 'passaporte_familia_auth_email_v1';
+    const THEME_STORAGE_KEY = 'passaporte_familia_theme_v1';
+
+    // Lista exclusiva de e-mails autorizados
     const ALLOWED_EMAILS = {
       'daniele_barreto@hotmail.com': 'Daniele',
       'rodrigocsantos1@gmail.com': 'Rodrigo'
     };
 
+    function applyTheme(theme) {
+      const isLight = theme === 'light';
+      document.documentElement.classList.toggle('theme-light', isLight);
+
+      const icons = document.querySelectorAll('.theme-toggle-icon');
+      const labels = document.querySelectorAll('.theme-toggle-label');
+      icons.forEach((el) => {
+        el.textContent = isLight ? '🌙' : '☀️';
+      });
+      labels.forEach((el) => {
+        el.textContent = isLight ? 'Noite' : 'Dia';
+      });
+    }
+
+    function loadTheme() {
+      try {
+        const savedTheme = localStorage.getItem(THEME_STORAGE_KEY) || 'dark';
+        applyTheme(savedTheme);
+      } catch (e) {
+        applyTheme('dark');
+      }
+    }
+
+    function toggleTheme() {
+      const isCurrentlyLight = document.documentElement.classList.contains('theme-light');
+      const nextTheme = isCurrentlyLight ? 'dark' : 'light';
+      try {
+        localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+      } catch (e) {}
+      applyTheme(nextTheme);
+    }
+
+    function checkAuth() {
+      try {
+        const savedEmail = (localStorage.getItem(AUTH_STORAGE_KEY) || '').trim().toLowerCase();
+        if (ALLOWED_EMAILS[savedEmail]) {
+          unlockApp(savedEmail);
+          return true;
+        }
+      } catch (e) {}
+      lockApp();
+      return false;
+    }
+
+    function handleAuthSubmit(event) {
+      event.preventDefault();
+      const input = document.getElementById('auth-email');
+      const errorBox = document.getElementById('auth-error');
+      const email = (input.value || '').trim().toLowerCase();
+
+      if (ALLOWED_EMAILS[email]) {
+        errorBox.classList.add('hidden');
+        try {
+          localStorage.setItem(AUTH_STORAGE_KEY, email);
+        } catch (e) {}
+        unlockApp(email);
+      } else {
+        errorBox.classList.remove('hidden');
+      }
+    }
+
+    function unlockApp(email) {
+      const gate = document.getElementById('auth-gate');
+      const app = document.getElementById('app');
+      const badge = document.getElementById('logged-user-badge');
+      gate.classList.add('hidden');
+      app.classList.remove('hidden');
+      app.classList.add('flex');
+      if (badge) {
+        badge.textContent = `Olá, ${ALLOWED_EMAILS[email]}`;
+      }
+      renderAll();
+    }
+
+    function lockApp() {
+      const gate = document.getElementById('auth-gate');
+      const app = document.getElementById('app');
+      gate.classList.remove('hidden');
+      app.classList.add('hidden');
+      app.classList.remove('flex');
+    }
+
+    function handleLogout() {
+      try {
+        localStorage.removeItem(AUTH_STORAGE_KEY);
+      } catch (e) {}
+      const input = document.getElementById('auth-email');
+      if (input) input.value = '';
+      lockApp();
+    }
+
     const DEFAULT_CHECKLIST = [
-      { id: 1, title: 'Rodrigo: RG/CIN ou CNH original + Passaporte anterior', detail: 'Levar o passaporte anterior (válido ou vencido) evita taxa em dobro.', category: 'adultos', person: 'Rodrigo', done: false },
-      { id: 2, title: 'Rodrigo: Quitação Eleitoral (TSE) e Regularidade Militar', detail: 'Conferir situação eleitoral regular no e-Título ou TSE.', category: 'adultos', person: 'Rodrigo', done: false },
-      { id: 3, title: 'Daniele: RG/CIN ou CNH original + Certidão de Casamento + Passaporte anterior', detail: 'Certidão de Casamento original é indispensável caso tenha alterado o sobrenome.', category: 'adultos', person: 'Daniele', done: false },
+      { id: 1, title: 'Rodrigo: RG/CIN ou CNH original + Passaporte anterior', detail: 'Levar o passaporte anterior (válido ou vencido) evita taxa em dobro na renovação.', category: 'adultos', person: 'Rodrigo', done: false },
+      { id: 2, title: 'Rodrigo: Quitação Eleitoral (TSE) e Regularidade Militar', detail: 'Conferir situação eleitoral regular no app e-Título ou site do TSE.', category: 'adultos', person: 'Rodrigo', done: false },
+      { id: 3, title: 'Daniele: RG/CIN ou CNH original + Certidão de Casamento + Passaporte anterior', detail: 'Certidão de Casamento original é indispensável caso tenha havido alteração de sobrenome.', category: 'adultos', person: 'Daniele', done: false },
       { id: 4, title: 'Daniele: Quitação Eleitoral (TSE) regularizada', detail: 'Conferir ausência de pendências eleitorais no portal do TSE.', category: 'adultos', person: 'Daniele', done: false },
-      { id: 5, title: 'Gabriel (14 anos): RG/CIN original em bom estado + Certidão de Nascimento', detail: 'Obrigatório RG/CIN próprio para maiores de 12 anos (1ª via - validade 10 anos).', category: 'menores', person: 'Gabriel', done: false },
-      { id: 6, title: 'Giovanna (8 anos): Certidão de Nascimento original sem rasuras (ou RG/CIN)', detail: 'Menores de 12 anos podem usar Certidão de Nascimento original (1ª via - validade 4 anos).', category: 'menores', person: 'Giovanna', done: false },
+      { id: 5, title: 'Gabriel (14 anos): RG/CIN original em bom estado + Certidão de Nascimento', detail: 'Obrigatório RG/CIN próprio para maiores de 12 anos (1ª via - validade de 10 anos).', category: 'menores', person: 'Gabriel', done: false },
+      { id: 6, title: 'Giovanna (8 anos): Certidão de Nascimento original sem rasuras (ou RG/CIN)', detail: 'Menores de 12 anos podem usar Certidão de Nascimento original (1ª via - validade de 4 anos).', category: 'menores', person: 'Giovanna', done: false },
       { id: 7, title: 'CPF ativo e regularizado dos 4 membros na Receita Federal', detail: 'Confirmar CPF de Rodrigo, Daniele, Gabriel e Giovanna.', category: 'geral', person: 'Família', done: false },
       { id: 8, title: 'Preencher os 4 formulários de solicitação no portal da Polícia Federal', detail: 'Emitir um protocolo individual para cada membro no site gov.br/pf.', category: 'geral', person: 'Família', done: false },
       { id: 9, title: 'Definir tipo de Autorização de Viagem impressa no passaporte (Gabriel e Giovanna)', detail: 'Escolher no formulário se poderão viajar desacompanhados, com 1 dos pais ou mediante autorização avulsa.', category: 'menores', person: 'Menores', done: false },
       { id: 10, title: 'Pagar as 4 taxas GRU (4x R$ 257,25 = R$ 1.029,00) via Pix ou Boleto', detail: 'Guardar os 4 comprovantes de pagamento vinculados ao CPF de cada solicitante.', category: 'geral', person: 'Família', done: false },
-      { id: 11, title: 'Agendar atendimento presencial para os 4 no posto PF escolhido em SP', detail: 'Agendar em grupo familiar após compensação bancária das GRUs.', category: 'geral', person: 'Família', done: false },
-      { id: 12, title: 'Comparecer no Posto PF (Rodrigo, Daniele, Gabriel e Giovanna juntos)', detail: 'Chegar 15 min antes com todos os documentos originais. Menores precisam da presença dos pais e do próprio menor.', category: 'geral', person: 'Família', done: false },
+      { id: 11, title: 'Agendar atendimento presencial para os 4 no posto PF escolhido em SP', detail: 'O sistema permite agendar em grupo familiar após compensação das GRUs.', category: 'geral', person: 'Família', done: false },
+      { id: 12, title: 'Comparecer no Posto PF (Rodrigo, Daniele, Gabriel e Giovanna juntos)', detail: 'Chegar 15 min antes com todos os documentos originais. Menores precisam da presença dos dois pais e do próprio menor.', category: 'geral', person: 'Família', done: false },
       { id: 13, title: 'Retirar os 4 passaportes prontos no Posto PF', detail: 'Prazo médio de 6 a 10 dias úteis após coleta biométrica e foto.', category: 'geral', person: 'Família', done: false }
     ];
 
     const DEFAULT_MEMBERS = [
-      { id: 'rodrigo', name: 'Rodrigo', typeLabel: 'Renovação', ageInfo: 'Adulto • Validade 10 anos', status: 'Formulário pendente', protocol: '', gruPaid: false },
-      { id: 'daniele', name: 'Daniele', typeLabel: 'Renovação', ageInfo: 'Adulto • Validade 10 anos', status: 'Formulário pendente', protocol: '', gruPaid: false },
-      { id: 'gabriel', name: 'Gabriel', typeLabel: '1ª via', ageInfo: '14 anos • RG obrigatório • Validade 10 anos', status: 'Formulário pendente', protocol: '', gruPaid: false },
-      { id: 'giovanna', name: 'Giovanna', typeLabel: '1ª via', ageInfo: '8 anos • Certidão/RG • Validade 4 anos', status: 'Formulário pendente', protocol: '', gruPaid: false }
+      { id: 'rodrigo', name: 'Rodrigo', typeLabel: 'Renovação', ageInfo: 'Adulto • Validade 10 anos', status: 'Formulário pendente', protocol: '', gruPaid: false, fee: 'R$ 257,25' },
+      { id: 'daniele', name: 'Daniele', typeLabel: 'Renovação', ageInfo: 'Adulto • Validade 10 anos', status: 'Formulário pendente', protocol: '', gruPaid: false, fee: 'R$ 257,25' },
+      { id: 'gabriel', name: 'Gabriel', typeLabel: '1ª via', ageInfo: '14 anos • RG obrigatório • Validade 10 anos', status: 'Formulário pendente', protocol: '', gruPaid: false, fee: 'R$ 257,25' },
+      { id: 'giovanna', name: 'Giovanna', typeLabel: '1ª via', ageInfo: '8 anos • Certidão/RG • Validade 4 anos', status: 'Formulário pendente', protocol: '', gruPaid: false, fee: 'R$ 257,25' }
     ];
 
-    const STATUS_OPTIONS = ['Formulário pendente', 'Formulário preenchido', 'GRU paga', 'Agendado na PF', 'Atendido / Em confecção', 'Pronto para retirada', 'Passaporte retirado ✅'];
+    const STATUS_OPTIONS = [
+      'Formulário pendente',
+      'Formulário preenchido',
+      'GRU paga',
+      'Agendado na PF',
+      'Atendido / Em confecção',
+      'Pronto para retirada',
+      'Passaporte retirado ✅'
+    ];
 
     const POSTOS_SP = [
-      { name: 'PF Shopping Eldorado (Pinheiros)', zone: 'Zona Oeste • Pinheiros', address: 'Av. Rebouças, 3970 — 1º Subsolo, Pinheiros, São Paulo - SP', hours: 'Seg a Sex, 7h às 19h', tip: 'Acesso fácil pela Estação Hebraica-Rebouças.', mapsQuery: 'Policia+Federal+Shopping+Eldorado+Sao+Paulo' },
-      { name: 'PF Shopping VillaLobos (Alto de Pinheiros)', zone: 'Zona Oeste • Alto de Pinheiros', address: 'Av. das Nações Unidas, 4777 — Piso G1, São Paulo - SP', hours: 'Seg a Sex, 8h às 18h', tip: 'Posto ágil no piso G1 do estacionamento.', mapsQuery: 'Policia+Federal+Shopping+Villa+Lobos+Sao+Paulo' },
-      { name: 'PF Shopping Ibirapuera (Moema)', zone: 'Zona Sul • Moema', address: 'Av. Ibirapuera, 3103 — Piso Campo Belo, Moema, São Paulo - SP', hours: 'Seg a Sex, 10h às 20h', tip: 'Ao lado do metrô Eucaliptos (Linha 5 Lilás).', mapsQuery: 'Policia+Federal+Shopping+Ibirapuera+Sao+Paulo' },
-      { name: 'PF Shopping West Plaza (Água Branca)', zone: 'Zona Oeste • Água Branca', address: 'Av. Francisco Matarazzo, s/n — Bloco B, 1º Andar, São Paulo - SP', hours: 'Seg a Sex, 10h às 18h', tip: 'Próximo ao metrô Barra Funda; ótima disponibilidade.', mapsQuery: 'Policia+Federal+Shopping+West+Plaza+Sao+Paulo' },
-      { name: 'PF Shopping Anália Franco (Tatuapé)', zone: 'Zona Leste • Tatuapé', address: 'Av. Regente Feijó, 1739 — Piso Orquídea, São Paulo - SP', hours: 'Seg a Sex, 10h às 19h', tip: 'Principal posto da Zona Leste.', mapsQuery: 'Policia+Federal+Shopping+Analia+Franco+Sao+Paulo' },
-      { name: 'PF Shopping Interlagos (Interlagos)', zone: 'Zona Sul • Interlagos', address: 'Av. Interlagos, 2255 — Subsolo, São Paulo - SP', hours: 'Seg a Sex, 8h às 18h', tip: 'Amplo estacionamento na Zona Sul.', mapsQuery: 'Policia+Federal+Shopping+Interlagos+Sao+Paulo' },
-      { name: 'PF Superintendência Lapa (Água Branca)', zone: 'Zona Oeste • Sede PF Lapa', address: 'Rua Hugo D\'Antola, 95 — Água Branca, São Paulo - SP', hours: 'Seg a Sex, 7h às 17h', tip: 'Sede da PF em SP com maior número de guichês.', mapsQuery: 'Superintendencia+Policia+Federal+Rua+Hugo+DAntola+95+Sao+Paulo' },
-      { name: 'PF Aeroporto de Guarulhos (Terminal 3)', zone: 'Grande SP • Aeroporto GRU', address: 'Rod. Hélio Smidt, s/n — Terminal 3 (Desembarque), Guarulhos - SP', hours: 'Seg a Sex, 8h às 17h', tip: 'Atende agendamentos e urgências.', mapsQuery: 'Policia+Federal+Terminal+3+Aeroporto+Guarulhos' },
-      { name: 'PF Shopping Tamboré (Alphaville/Barueri)', zone: 'Oeste • Barueri', address: 'Av. Piracema, 669 — Piso G1, Tamboré, Barueri - SP', hours: 'Seg a Sex, 10h às 19h', tip: 'Ótima opção na saída para Castelo Branco.', mapsQuery: 'Policia+Federal+Shopping+Tambore+Barueri' }
+      { id: 'eldorado', name: 'PF Shopping Eldorado (Pinheiros)', zone: 'Zona Oeste • Pinheiros', address: 'Av. Rebouças, 3970 — 1º Subsolo, Pinheiros, São Paulo - SP, 05402-600', hours: 'Seg a Sex, das 7h às 19h (atendimento agendado)', tip: 'Fácil acesso pela Estação Hebraica-Rebouças (Linha 9 Esmeralda) e amplo estacionamento.', mapsQuery: 'Policia+Federal+Shopping+Eldorado+Sao+Paulo' },
+      { id: 'villalobos', name: 'PF Shopping VillaLobos (Alto de Pinheiros)', zone: 'Zona Oeste • Alto de Pinheiros', address: 'Av. das Nações Unidas, 4777 — Piso G1, Alto de Pinheiros, São Paulo - SP, 05477-000', hours: 'Seg a Sex, das 8h às 18h (atendimento agendado)', tip: 'Posto moderno e ágil para famílias no estacionamento coberto G1.', mapsQuery: 'Policia+Federal+Shopping+Villa+Lobos+Sao+Paulo' },
+      { id: 'ibirapuera', name: 'PF Shopping Ibirapuera (Moema)', zone: 'Zona Sul • Moema', address: 'Av. Ibirapuera, 3103 — Piso Campo Belo, Indianópolis, São Paulo - SP, 04029-902', hours: 'Seg a Sex, das 10h às 20h (atendimento agendado)', tip: 'Colado na estação Eucaliptos (Linha 5 Lilás). Entrada antecipada sinalizada se agendado antes das 10h.', mapsQuery: 'Policia+Federal+Shopping+Ibirapuera+Sao+Paulo' },
+      { id: 'westplaza', name: 'PF Shopping West Plaza (Água Branca)', zone: 'Zona Oeste / Centro • Água Branca', address: 'Av. Francisco Matarazzo, s/n — Bloco B, 1º Andar, Água Branca, São Paulo - SP, 05001-900', hours: 'Seg a Sex, das 10h às 18h (atendimento agendado)', tip: 'Próximo ao metrô Palmeiras-Barra Funda; costuma ter excelente disponibilidade de vagas.', mapsQuery: 'Policia+Federal+Shopping+West+Plaza+Sao+Paulo' },
+      { id: 'analiafranco', name: 'PF Shopping Anália Franco (Tatuapé)', zone: 'Zona Leste • Vila Formosa / Tatuapé', address: 'Av. Regente Feijó, 1739 — Piso Orquídea, Vila Regente Feijó, São Paulo - SP, 03342-900', hours: 'Seg a Sex, das 10h às 19h (atendimento agendado)', tip: 'Principal posto da Zona Leste, estrutura confortável para ir com crianças.', mapsQuery: 'Policia+Federal+Shopping+Analia+Franco+Sao+Paulo' },
+      { id: 'interlagos', name: 'PF Shopping Interlagos (Interlagos)', zone: 'Zona Sul • Interlagos', address: 'Av. Interlagos, 2255 — Subsolo, Interlagos, São Paulo - SP, 04661-200', hours: 'Seg a Sex, das 8h às 18h (atendimento agendado)', tip: 'Amplo estacionamento gratuito/acessível na Zona Sul.', mapsQuery: 'Policia+Federal+Shopping+Interlagos+Sao+Paulo' },
+      { id: 'lapa', name: 'PF Superintendência Lapa (Água Branca)', zone: 'Zona Oeste • Sede PF Lapa', address: 'Rua Hugo D\'Antola, 95 — Lapa de Baixo / Água Branca, São Paulo - SP, 05038-090', hours: 'Seg a Sex, das 7h às 17h', tip: 'Sede da PF em SP. Maior volume de vagas diárias e setor de casos especiais.', mapsQuery: 'Superintendencia+Policia+Federal+Rua+Hugo+DAntola+95+Sao+Paulo' },
+      { id: 'guarulhos', name: 'PF Aeroporto de Guarulhos (Terminal 3)', zone: 'Grande SP • Aeroporto GRU', address: 'Rod. Hélio Smidt, s/n — Terminal 3 (Piso Desembarque), Guarulhos - SP, 07190-100', hours: 'Seg a Sex, das 8h às 17h', tip: 'Atende agendamentos regulares e emissão de passaporte de emergência/urgência.', mapsQuery: 'Policia+Federal+Terminal+3+Aeroporto+Guarulhos' },
+      { id: 'tambore', name: 'PF Shopping Tamboré (Alphaville/Barueri)', zone: 'Oeste / Alphaville • Barueri', address: 'Av. Piracema, 669 — Piso G1, Tamboré, Barueri - SP, 06460-030', hours: 'Seg a Sex, das 10h às 19h', tip: 'Excelente opção para quem sai pela Castelo Branco / Alphaville.', mapsQuery: 'Policia+Federal+Shopping+Tambore+Barueri' }
     ];
 
     let state = {
@@ -230,72 +677,40 @@
       schedule: { posto: 'PF Shopping Eldorado (Pinheiros)', date: '', time: '' }
     };
 
-    function checkAuth() {
-      try {
-        const savedEmail = (localStorage.getItem(AUTH_STORAGE_KEY) || '').trim().toLowerCase();
-        if (ALLOWED_EMAILS[savedEmail]) { unlockApp(savedEmail); return; }
-      } catch (e) {}
-      lockApp();
-    }
-
-    function handleAuthSubmit(e) {
-      e.preventDefault();
-      const email = (document.getElementById('auth-email').value || '').trim().toLowerCase();
-      const err = document.getElementById('auth-error');
-      if (ALLOWED_EMAILS[email]) {
-        err.classList.add('hidden');
-        try { localStorage.setItem(AUTH_STORAGE_KEY, email); } catch (ex) {}
-        unlockApp(email);
-      } else {
-        err.classList.remove('hidden');
-      }
-    }
-
-    function unlockApp(email) {
-      document.getElementById('auth-gate').classList.add('hidden');
-      const app = document.getElementById('app');
-      app.classList.remove('hidden');
-      app.classList.add('flex');
-      document.getElementById('logged-user-badge').textContent = 'Olá, ' + ALLOWED_EMAILS[email];
-      renderAll();
-    }
-
-    function lockApp() {
-      document.getElementById('auth-gate').classList.remove('hidden');
-      const app = document.getElementById('app');
-      app.classList.add('hidden');
-      app.classList.remove('flex');
-    }
-
-    function handleLogout() {
-      try { localStorage.removeItem(AUTH_STORAGE_KEY); } catch (e) {}
-      document.getElementById('auth-email').value = '';
-      lockApp();
-    }
-
     function loadState() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
         if (raw) {
-          const p = JSON.parse(raw);
-          if (Array.isArray(p.checklist) && p.checklist.length === 13) state.checklist = p.checklist;
-          if (Array.isArray(p.members) && p.members.length === 4) state.members = p.members;
-          if (p.schedule) state.schedule = { ...state.schedule, ...p.schedule };
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed.checklist) && parsed.checklist.length === 13) state.checklist = parsed.checklist;
+          if (Array.isArray(parsed.members) && parsed.members.length === 4) state.members = parsed.members;
+          if (parsed.schedule) state.schedule = { ...state.schedule, ...parsed.schedule };
         }
       } catch (e) {}
     }
 
     function saveState() {
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ checklist: state.checklist, members: state.members, schedule: state.schedule })); } catch (e) {}
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          checklist: state.checklist,
+          members: state.members,
+          schedule: state.schedule
+        }));
+      } catch (e) {}
     }
 
     function switchTab(tab) {
       state.activeTab = tab;
       ['checklist', 'protocolos', 'postos'].forEach((t) => {
-        document.getElementById('tab-' + t).classList.toggle('hidden', t !== tab);
-        document.getElementById('nav-' + t).className = t === tab
-          ? 'min-h-[54px] rounded-xl flex flex-col items-center justify-center gap-1 font-bold text-xs bg-emerald-600 text-white'
-          : 'min-h-[54px] rounded-xl flex flex-col items-center justify-center gap-1 font-semibold text-xs text-slate-400';
+        const sec = document.getElementById(`tab-${t}`);
+        const btn = document.getElementById(`nav-${t}`);
+        if (t === tab) {
+          sec.classList.remove('hidden');
+          btn.className = 'min-h-[54px] rounded-xl flex flex-col items-center justify-center gap-1 transition font-bold text-xs bg-emerald-600 text-white shadow-sm cursor-pointer';
+        } else {
+          sec.classList.add('hidden');
+          btn.className = 'min-h-[54px] rounded-xl flex flex-col items-center justify-center gap-1 transition font-semibold text-xs text-slate-400 hover:text-white cursor-pointer';
+        }
       });
       renderAll();
     }
@@ -303,177 +718,333 @@
     function setChecklistFilter(filter) {
       state.checklistFilter = filter;
       ['all', 'pending', 'adultos', 'menores', 'geral'].forEach((f) => {
-        document.getElementById('filter-' + f).className = f === filter
-          ? 'min-h-[40px] px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap bg-emerald-600 text-white'
-          : 'min-h-[40px] px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap bg-[#131c2e] text-slate-400 border border-slate-800';
+        const el = document.getElementById(`filter-${f}`);
+        if (!el) return;
+        if (f === filter) {
+          el.className = 'min-h-[40px] px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition bg-emerald-600 text-white cursor-pointer';
+        } else {
+          el.className = 'min-h-[40px] px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition bg-[#131c2e] text-slate-400 border border-slate-800 cursor-pointer';
+        }
       });
       renderChecklist();
     }
 
     function toggleChecklistItem(id) {
       const item = state.checklist.find((i) => i.id === id);
-      if (item) { item.done = !item.done; saveState(); renderAll(); }
+      if (item) {
+        item.done = !item.done;
+        saveState();
+        renderAll();
+      }
     }
 
-    function updateMemberField(id, field, val) {
-      const m = state.members.find((i) => i.id === id);
+    function updateMemberField(memberId, field, value) {
+      const m = state.members.find((item) => item.id === memberId);
       if (!m) return;
-      m[field] = val;
-      if (field === 'gruPaid' && val && m.status === 'Formulário pendente') m.status = 'GRU paga';
+      m[field] = value;
+      if (field === 'gruPaid' && value && m.status === 'Formulário pendente') {
+        m.status = 'GRU paga';
+      }
       saveState();
       renderHeaderAndProgress();
       renderWhatsAppPreview();
       if (field === 'gruPaid' || field === 'status') renderProtocols();
     }
 
-    function updateScheduleField(field, val) {
-      state.schedule[field] = val;
+    function updateScheduleField(field, value) {
+      state.schedule[field] = value;
       saveState();
       renderWhatsAppPreview();
       renderPostos();
     }
 
-    function selectPosto(name) {
-      state.schedule.posto = name;
+    function selectPosto(postoName) {
+      state.schedule.posto = postoName;
       saveState();
-      showToast('Posto selecionado: ' + name);
+      showToast(`Posto definido: ${postoName}`);
       renderAll();
     }
 
     function formatScheduleText() {
       const { posto, date, time } = state.schedule;
-      const d = date ? date.split('-').reverse().join('/') : '';
-      const dt = [d, time ? 'às ' + time : ''].filter(Boolean).join(' ');
-      if (dt && posto) return dt + ' — ' + posto;
-      if (posto) return 'Data/Hora a definir — ' + posto;
-      if (dt) return dt + ' — Posto a definir';
+      let dateFormatted = '';
+      if (date) {
+        const parts = date.split('-');
+        dateFormatted = parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : date;
+      }
+      const dateTimePart = [dateFormatted, time ? `às ${time}` : ''].filter(Boolean).join(' ');
+      if (dateTimePart && posto) return `${dateTimePart} — ${posto}`;
+      if (posto && !dateTimePart) return `Data/Hora a definir — ${posto}`;
+      if (dateTimePart && !posto) return `${dateTimePart} — Posto a definir`;
       return 'Ainda não agendado';
     }
 
     function generateWhatsAppMessage() {
-      const done = state.checklist.filter((i) => i.done).length;
-      const pct = Math.round((done / 13) * 100);
-      const getM = (id) => state.members.find((m) => m.id === id);
-      const r = getM('rodrigo'), d = getM('daniele'), ga = getM('gabriel'), gi = getM('giovanna');
-      const pend = state.checklist.filter((i) => !i.done);
-      const pendText = pend.length ? pend.map((i) => '- ' + i.title).join('\n') : '- Nenhuma pendência! Todas as 13 etapas concluídas 🎉';
+      const doneCount = state.checklist.filter((i) => i.done).length;
+      const totalCount = state.checklist.length;
+      const pct = Math.round((doneCount / totalCount) * 100);
+
+      const rodrigo = state.members.find((m) => m.id === 'rodrigo');
+      const daniele = state.members.find((m) => m.id === 'daniele');
+      const gabriel = state.members.find((m) => m.id === 'gabriel');
+      const giovanna = state.members.find((m) => m.id === 'giovanna');
+
+      const pendingItems = state.checklist.filter((i) => !i.done);
+      const pendingLines = pendingItems.length > 0
+        ? pendingItems.map((i) => `- ${i.title}`).join('\n')
+        : '- Nenhuma pendência! Todas as 13 etapas concluídas 🎉';
 
       return [
-        '🛂 *PASSAPORTES DA FAMÍLIA — STATUS*',
-        `📊 Progresso: ${done}/13 etapas concluídas (${pct}%)`,
-        '💰 Taxas GRU: R$ 1.029,00 (4x R$ 257,25)',
-        '',
-        '👤 *Protocolos & Status:*',
-        `• Rodrigo (Renovação): ${r.status} — Prot: ${r.protocol.trim() || 'Pendente'}`,
-        `• Daniele (Renovação): ${d.status} — Prot: ${d.protocol.trim() || 'Pendente'}`,
-        `• Gabriel (1ª via): ${ga.status} — Prot: ${ga.protocol.trim() || 'Pendente'}`,
-        `• Giovanna (1ª via): ${gi.status} — Prot: ${gi.protocol.trim() || 'Pendente'}`,
-        '',
+        `🛂 *PASSAPORTES DA FAMÍLIA — STATUS*`,
+        `📊 Progresso: ${doneCount}/${totalCount} etapas concluídas (${pct}%)`,
+        `💰 Taxas GRU: R$ 1.029,00 (4x R$ 257,25)`,
+        ``,
+        `👤 *Protocolos & Status:*`,
+        `• Rodrigo (Renovação): ${rodrigo.status} — Prot: ${rodrigo.protocol.trim() || 'Pendente'}`,
+        `• Daniele (Renovação): ${daniele.status} — Prot: ${daniele.protocol.trim() || 'Pendente'}`,
+        `• Gabriel (1ª via): ${gabriel.status} — Prot: ${gabriel.protocol.trim() || 'Pendente'}`,
+        `• Giovanna (1ª via): ${giovanna.status} — Prot: ${giovanna.protocol.trim() || 'Pendente'}`,
+        ``,
         `📅 *Agendamento:* ${formatScheduleText()}`,
-        '',
-        '⚠️ *Pendências no Checklist:*',
-        pendText
+        ``,
+        `⚠️ *Pendências no Checklist:*`,
+        pendingLines
       ].join('\n');
     }
 
     function shareOnWhatsApp() {
-      window.open('https://wa.me/?text=' + encodeURIComponent(generateWhatsAppMessage()), '_blank');
+      const text = generateWhatsAppMessage();
+      const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank', 'noopener,noreferrer');
     }
 
     async function copySummary() {
       const text = generateWhatsAppMessage();
-      try { await navigator.clipboard.writeText(text); } catch (e) {}
-      showToast('Resumo copiado!');
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast('Resumo copiado para a área de transferência!');
+      } catch (err) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        showToast('Resumo copiado para a área de transferência!');
+      }
     }
 
+    let toastTimeout = null;
     function showToast(msg) {
-      const t = document.getElementById('toast');
-      document.getElementById('toast-message').textContent = '✅ ' + msg;
-      t.classList.remove('opacity-0', 'pointer-events-none');
-      setTimeout(() => t.classList.add('opacity-0', 'pointer-events-none'), 2400);
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-message');
+      toastMsg.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-2');
+      toast.classList.add('opacity-100', 'translate-y-0');
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-2');
+        toast.classList.remove('opacity-100', 'translate-y-0');
+      }, 2600);
     }
 
     function renderHeaderAndProgress() {
-      const done = state.checklist.filter((i) => i.done).length;
-      const pct = Math.round((done / 13) * 100);
-      document.getElementById('progress-label').textContent = `${done}/13 concluídos`;
+      const doneCount = state.checklist.filter((i) => i.done).length;
+      const total = state.checklist.length;
+      const pct = Math.round((doneCount / total) * 100);
+
+      document.getElementById('progress-label').textContent = `${doneCount}/${total} concluídos`;
       document.getElementById('progress-pct').textContent = `${pct}%`;
       document.getElementById('progress-bar').style.width = `${pct}%`;
-      const paid = state.members.filter((m) => m.gruPaid).length;
-      const gc = document.getElementById('gru-paid-counter');
-      if (gc) gc.textContent = `${paid}/4 GRUs pagas`;
+
+      const paidCount = state.members.filter((m) => m.gruPaid).length;
+      const gruCounter = document.getElementById('gru-paid-counter');
+      if (gruCounter) gruCounter.textContent = `${paidCount}/4 GRUs pagas`;
     }
 
     function renderChecklist() {
-      const filtered = state.checklist.filter((i) => {
+      const container = document.getElementById('checklist-container');
+      const filtered = state.checklist.filter((item) => {
         if (state.checklistFilter === 'all') return true;
-        if (state.checklistFilter === 'pending') return !i.done;
-        return i.category === state.checklistFilter;
+        if (state.checklistFilter === 'pending') return !item.done;
+        return item.category === state.checklistFilter;
       });
-      document.getElementById('checklist-container').innerHTML = filtered.map((i) => `
-        <button type="button" onclick="toggleChecklistItem(${i.id})" class="w-full text-left min-h-[64px] p-3.5 rounded-2xl border flex items-start gap-3 ${i.done ? 'bg-[#090d16] border-slate-800 opacity-70' : 'bg-[#131c2e] border-slate-800'}">
-          <div class="mt-0.5 w-6 h-6 rounded-lg flex items-center justify-center shrink-0 border ${i.done ? 'bg-emerald-600 border-emerald-600 text-white' : 'border-slate-500 bg-[#090d16] text-xs font-mono text-slate-400'}">${i.done ? '✓' : i.id}</div>
-          <div class="flex-1 space-y-1">
-            <span class="text-[11px] font-bold uppercase px-2 py-0.5 rounded bg-[#090d16] border border-slate-800 text-slate-400">${i.person}</span>
-            <p class="text-sm font-bold ${i.done ? 'line-through text-slate-400' : 'text-white'}">${i.title}</p>
-            <p class="text-xs text-slate-400">${i.detail}</p>
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="bg-[#131c2e] border border-slate-800 rounded-2xl p-6 text-center space-y-1">
+            <div class="text-sm font-bold text-white">Nenhum item neste filtro 🎉</div>
+            <p class="text-xs text-slate-400">Toque em "Todos (13)" para ver a lista completa.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map((item) => `
+        <button
+          type="button"
+          onclick="toggleChecklistItem(${item.id})"
+          class="w-full text-left min-h-[64px] p-3.5 rounded-2xl border transition flex items-start gap-3 cursor-pointer ${
+            item.done
+              ? 'bg-[#090d16] border-slate-800 opacity-75'
+              : 'bg-[#131c2e] border-slate-800 hover:border-emerald-500 shadow-sm'
+          }"
+        >
+          <div class="mt-0.5 w-6 h-6 rounded-lg flex items-center justify-center shrink-0 border transition ${
+            item.done
+              ? 'bg-emerald-600 border-emerald-600 text-white'
+              : 'border-slate-500 bg-[#090d16]'
+          }">
+            ${item.done ? `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>` : `<span class="text-[11px] font-mono font-bold text-slate-400">${item.id}</span>`}
+          </div>
+          <div class="flex-1 min-w-0 space-y-1">
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#090d16] border border-slate-800 text-slate-400">
+                ${item.person}
+              </span>
+              <span class="text-[11px] font-mono text-slate-500">#${String(item.id).padStart(2, '0')}</span>
+            </div>
+            <p class="text-sm font-bold leading-snug ${item.done ? 'line-through text-slate-400' : 'text-white'}">
+              ${item.title}
+            </p>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              ${item.detail}
+            </p>
           </div>
         </button>
       `).join('');
     }
 
     function renderProtocols() {
-      document.getElementById('sched-posto').value = state.schedule.posto || '';
-      document.getElementById('sched-date').value = state.schedule.date || '';
-      document.getElementById('sched-time').value = state.schedule.time || '';
-      document.getElementById('protocols-container').innerHTML = state.members.map((m) => `
-        <div class="bg-[#131c2e] border border-slate-800 rounded-2xl p-4 space-y-3">
-          <div class="flex items-start justify-between">
+      const postoSelect = document.getElementById('sched-posto');
+      const dateInput = document.getElementById('sched-date');
+      const timeInput = document.getElementById('sched-time');
+      if (postoSelect) postoSelect.value = state.schedule.posto || '';
+      if (dateInput) dateInput.value = state.schedule.date || '';
+      if (timeInput) timeInput.value = state.schedule.time || '';
+
+      const container = document.getElementById('protocols-container');
+      container.innerHTML = state.members.map((m) => `
+        <div class="bg-[#131c2e] border border-slate-800 rounded-2xl p-4 space-y-3 shadow-sm">
+          <div class="flex items-start justify-between gap-2">
             <div>
-              <h3 class="text-base font-extrabold text-white">${m.name} <span class="text-xs font-bold px-2 py-0.5 rounded bg-[#090d16] border border-slate-800">${m.typeLabel}</span></h3>
+              <div class="flex items-center gap-2">
+                <h3 class="text-base font-extrabold text-white">${m.name}</h3>
+                <span class="text-xs font-bold px-2 py-0.5 rounded-lg bg-[#090d16] border border-slate-800 text-slate-200">
+                  ${m.typeLabel}
+                </span>
+              </div>
               <p class="text-xs text-slate-400 mt-0.5">${m.ageInfo}</p>
             </div>
-            <button type="button" onclick="updateMemberField('${m.id}', 'gruPaid', ${!m.gruPaid})" class="min-h-[40px] px-3 py-1.5 rounded-xl text-xs font-bold border ${m.gruPaid ? 'bg-emerald-600/20 border-emerald-500 text-emerald-400' : 'bg-[#090d16] border-slate-800 text-slate-400'}">
-              ${m.gruPaid ? '✓ GRU Paga' : 'GRU R$ 257,25'}
+            <button
+              type="button"
+              onclick="updateMemberField('${m.id}', 'gruPaid', ${!m.gruPaid})"
+              class="min-h-[40px] px-3 py-1.5 rounded-xl text-xs font-bold border transition flex items-center gap-1.5 cursor-pointer ${
+                m.gruPaid
+                  ? 'bg-emerald-600/20 border-emerald-500 text-emerald-400'
+                  : 'bg-[#090d16] border-slate-800 text-slate-400'
+              }"
+            >
+              <span>${m.gruPaid ? '✓ GRU Paga' : 'GRU R$ 257,25'}</span>
             </button>
           </div>
-          <select onchange="updateMemberField('${m.id}', 'status', this.value)" class="w-full min-h-[48px] px-3 py-2 rounded-xl bg-[#090d16] border border-slate-800 text-sm font-semibold text-white">
-            ${STATUS_OPTIONS.map((o) => `<option value="${o}" ${m.status === o ? 'selected' : ''}>${o}</option>`).join('')}
-          </select>
-          <input type="text" inputmode="numeric" value="${m.protocol}" oninput="updateMemberField('${m.id}', 'protocol', this.value)" placeholder="Nº Protocolo PF (ex: 2026.0001234567)" class="w-full min-h-[48px] px-3.5 py-2 rounded-xl bg-[#090d16] border border-slate-800 text-sm font-mono text-white placeholder:text-slate-600" />
+
+          <div class="grid grid-cols-1 gap-2.5">
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 mb-1">Status Atual</label>
+              <select
+                onchange="updateMemberField('${m.id}', 'status', this.value)"
+                class="w-full min-h-[48px] px-3 py-2 rounded-xl bg-[#090d16] border border-slate-800 text-sm font-semibold text-white focus:outline-none focus:border-emerald-500"
+              >
+                ${STATUS_OPTIONS.map((opt) => `<option value="${opt}" ${m.status === opt ? 'selected' : ''}>${opt}</option>`).join('')}
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 mb-1">Número do Protocolo PF</label>
+              <input
+                type="text"
+                inputmode="numeric"
+                value="${m.protocol}"
+                oninput="updateMemberField('${m.id}', 'protocol', this.value)"
+                placeholder="Ex: 2026.0001234567 (ou deixe em branco)"
+                class="w-full min-h-[48px] px-3.5 py-2 rounded-xl bg-[#090d16] border border-slate-800 text-sm font-mono text-white placeholder:text-slate-600 focus:outline-none focus:border-emerald-500"
+              />
+            </div>
+          </div>
         </div>
       `).join('');
+
       renderWhatsAppPreview();
     }
 
     function renderWhatsAppPreview() {
-      const p = document.getElementById('whatsapp-preview');
-      if (p) p.textContent = generateWhatsAppMessage();
+      const preview = document.getElementById('whatsapp-preview');
+      if (preview) preview.textContent = generateWhatsAppMessage();
     }
 
     function renderPostos() {
-      const q = (document.getElementById('posto-search')?.value || '').trim().toLowerCase();
-      const filtered = POSTOS_SP.filter((p) => p.name.toLowerCase().includes(q) || p.zone.toLowerCase().includes(q) || p.address.toLowerCase().includes(q));
-      document.getElementById('postos-container').innerHTML = filtered.map((p) => {
-        const sel = state.schedule.posto === p.name;
+      const query = (document.getElementById('posto-search')?.value || '').trim().toLowerCase();
+      const container = document.getElementById('postos-container');
+      const filtered = POSTOS_SP.filter((p) =>
+        p.name.toLowerCase().includes(query) ||
+        p.zone.toLowerCase().includes(query) ||
+        p.address.toLowerCase().includes(query)
+      );
+
+      container.innerHTML = filtered.map((p) => {
+        const isSelected = state.schedule.posto === p.name;
+        const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${p.mapsQuery}`;
+        const wazeUrl = `https://waze.com/ul?q=${p.mapsQuery}&navigate=yes`;
+
         return `
-          <div class="bg-[#131c2e] border ${sel ? 'border-emerald-500' : 'border-slate-800'} rounded-2xl p-4 space-y-3">
-            <div class="flex justify-between items-start">
+          <div class="bg-[#131c2e] border ${isSelected ? 'border-emerald-500' : 'border-slate-800'} rounded-2xl p-4 space-y-3 shadow-sm">
+            <div class="flex items-start justify-between gap-2">
               <div>
-                <span class="text-[11px] font-bold uppercase text-slate-400">${p.zone}</span>
-                <h3 class="text-sm font-extrabold text-white">${p.name}</h3>
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">${p.zone}</span>
+                <h3 class="text-sm font-extrabold text-white mt-0.5">${p.name}</h3>
               </div>
-              ${sel ? '<span class="text-xs font-bold px-2 py-1 rounded bg-emerald-600 text-white">Selecionado</span>' : ''}
+              ${isSelected ? `<span class="text-xs font-bold px-2.5 py-1 rounded-lg bg-emerald-600 text-white shrink-0">Selecionado</span>` : ''}
             </div>
-            <p class="text-xs text-slate-200">${p.address}</p>
-            <div class="text-xs text-slate-400 bg-[#090d16] p-2.5 rounded-xl border border-slate-800">
+
+            <p class="text-xs text-slate-200 leading-relaxed">${p.address}</p>
+            <div class="text-xs text-slate-400 space-y-1 bg-[#090d16] p-2.5 rounded-xl border border-slate-800">
               <div><strong class="text-slate-200">Horário:</strong> ${p.hours}</div>
               <div><strong class="text-slate-200">Dica:</strong> ${p.tip}</div>
             </div>
-            <div class="grid grid-cols-3 gap-2">
-              <button type="button" onclick="selectPosto('${p.name.replace(/'/g, "\\'")}')" class="min-h-[48px] px-2 py-2 rounded-xl font-bold text-xs ${sel ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-white'}">${sel ? '✓ Escolhido' : 'Escolher'}</button>
-              <a href="https://www.google.com/maps/search/?api=1&query=${p.mapsQuery}" target="_blank" class="min-h-[48px] px-2 py-2 rounded-xl font-bold text-xs bg-[#090d16] text-slate-200 border border-slate-800 flex items-center justify-center">🗺️ Maps</a>
-              <a href="https://waze.com/ul?q=${p.mapsQuery}&navigate=yes" target="_blank" class="min-h-[48px] px-2 py-2 rounded-xl font-bold text-xs bg-[#090d16] text-slate-200 border border-slate-800 flex items-center justify-center">🚗 Waze</a>
+
+            <div class="grid grid-cols-3 gap-2 pt-1">
+              <button
+                type="button"
+                onclick="selectPosto('${p.name.replace(/'/g, "\\'")}')"
+                class="min-h-[48px] px-2.5 py-2 rounded-xl font-bold text-xs transition flex items-center justify-center text-center cursor-pointer ${
+                  isSelected
+                    ? 'bg-emerald-600 text-white'
+                    : 'bg-slate-800 hover:bg-slate-700 text-white'
+                }"
+              >
+                ${isSelected ? '✓ No Agendamento' : 'Escolher Posto'}
+              </button>
+
+              <a
+                href="${googleMapsUrl}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="min-h-[48px] px-2.5 py-2 rounded-xl font-bold text-xs bg-[#090d16] hover:bg-slate-800 text-slate-200 border border-slate-800 flex items-center justify-center gap-1.5 transition"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-400"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/></svg>
+                <span>Maps</span>
+              </a>
+
+              <a
+                href="${wazeUrl}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="min-h-[48px] px-2.5 py-2 rounded-xl font-bold text-xs bg-[#090d16] hover:bg-slate-800 text-slate-200 border border-slate-800 flex items-center justify-center gap-1.5 transition"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-sky-400"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+                <span>Waze</span>
+              </a>
             </div>
           </div>
         `;
@@ -487,6 +1058,7 @@
       renderPostos();
     }
 
+    loadTheme();
     loadState();
     checkAuth();
   </script>
